@@ -19,7 +19,8 @@
   "require": {
     "ext-json": "*",
     "php": "^7.1.0",
-    "qingbing/zf-helper": "^1.0.0"
+    "qingbing/zf-helper": "^1.0.0",
+    "qingbing/laravel-helper": "^1.0.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^8.5"
