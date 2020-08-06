@@ -11,7 +11,7 @@ namespace Program\Controllers;
 use Illuminate\Support\Facades\Hash;
 use Program\Components\Controller;
 use Zf\Helper\Format;
-use Zf\Helper\JwtHelper;
+use Zf\Helper\Plugins\Jwt;
 
 class TestController extends Controller
 {
@@ -96,7 +96,7 @@ class TestController extends Controller
      */
     public function edit()
     {
-        $jwt = JwtHelper::getInstance([
+        $jwt = Jwt::getInstance([
             'privateKey' => env('JWT_PRIVATE_KEY'),
             'publicKey'  => env('JWT_PUBLIC_KEY'),
         ]);
