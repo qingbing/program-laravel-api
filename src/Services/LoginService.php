@@ -8,25 +8,37 @@
 namespace Program\Services;
 
 
+use Program\Components\Service;
 use Program\Models\Dao\DaoUser;
-use Zf\Helper\Abstracts\Singleton;
+use Program\Models\Dto\DtoProgramOperateLog;
+use Program\Sim;
 use Zf\Helper\Exceptions\BusinessException;
 
 /**
  * Class LoginService
  * @package Program\Services
  */
-class LoginService extends Singleton
+class LoginService extends Service
 {
+    /**
+     * 构造函数后执行
+     */
+    protected function init()
+    {
+        parent::init();
+        $this->openLog = true;
+        $this->logType = DtoProgramOperateLog::TYPE_LOGIN;
+    }
+
     /**
      * 用户登录
      *
      * @param $params
      * @return array
-     *
      * @throws BusinessException
+     * @throws \Throwable
      */
-    public function index($params)
+    public function index(array $params)
     {
         $user = DaoUser::getByUsername($params['username']);
         if (null === $user) {
@@ -38,7 +50,15 @@ class LoginService extends Singleton
         if (!$user->isPassword($params['password'])) {
             throw new BusinessException("密码无效", 110001003);
         }
-        return UserService::getInstance()->generateToken($user->uid);
+        return \DB::transaction(function () use ($user) {
+            $this->logUid      = $user->uid;
+            $this->logUsername = $user->username;
+            $this->logKeyword  = $user->uid;
+            $this->logMessage  = '登录';
+
+            $res = UserService::getInstance()->generateToken($user->uid);
+            return $this->success($res);
+        });
     }
 
     /**
@@ -47,7 +67,16 @@ class LoginService extends Singleton
      */
     public function logout()
     {
+        // 日志记录
+        $user              = Sim::user();
+        $this->logUid      = $user->uid;
+        $this->logUsername = $user->username;
+        $this->logKeyword  = $user->uid;
+        $this->logMessage  = '退出登录';
+        $this->success();
+        // 业务处理
         session()->flush();
-        return true;
+        session()->regenerate();
+        return session()->token();
     }
 }

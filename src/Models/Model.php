@@ -14,6 +14,6 @@ namespace Program\Models;
  * Class Model
  * @package Program\Models
  */
-class Model extends \Helper\Components\Model
+class Model extends \Common\Components\Model
 {
 }

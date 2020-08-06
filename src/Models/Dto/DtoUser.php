@@ -45,16 +45,15 @@ use Zf\Helper\Traits\Models\TLabelSex;
 class DtoUser extends Model
 {
     use TLabelSex, TLabelForbidden;
-
+    /**
+     * @var string 数据表名
+     */
+    protected $table = 'program_user';
     /**
      * 用户创建或注册时间
      * string
      */
     const CREATED_AT = 'register_at';
-    /**
-     * @var string 表名
-     */
-    protected $table = 'program_user';
     /**
      * @var string 主键
      */

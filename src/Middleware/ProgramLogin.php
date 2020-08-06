@@ -12,6 +12,7 @@ use Helper\AppHelper;
 use Illuminate\Validation\UnauthorizedException;
 use Program\Models\Dao\DaoUser;
 use Program\Services\UserService;
+use Program\Sim;
 use Zf\Helper\Exceptions\BusinessException;
 use Zf\Helper\Registry;
 
@@ -51,7 +52,7 @@ class ProgramLogin
         if (null === $user) {
             throw new BusinessException('用户不存在', 110002004);
         }
-        Registry::set(UserService::REGISTRY_KEY, $user);
+        Registry::set(Sim::REGISTRY_LOGIN_USER, $user);
         return $next($request);
     }
 }

@@ -18,6 +18,16 @@ use Illuminate\Support\Facades\Route;
  */
 class Assistant
 {
+    const MODULE_PLATFORM = 'platform';
+
+    /**
+     * @var array 路由模块
+     */
+    protected static $_routeModules = [
+        self::MODULE_PLATFORM,
+        'auth',
+    ];
+
     /**
      * 获取模块的 base 目录
      *
@@ -32,30 +42,67 @@ class Assistant
         return $_path;
     }
 
+
     /**
      * 初始化 program 路由
      *
-     * @param array|null $types
+     * @param array|null $modules
      */
-    public static function initRoute(array $types = null)
+    public static function initRoute(array $modules = null)
     {
-        // 登录路由
+        // 普通路由，不需要登录
         Route::group([
             'prefix'    => 'program',
             'namespace' => '\Program\Controllers',
         ], function () {
             Route::get("/token", "PublicController@actionToken");
+            Route::get("/label", "PublicController@actionLabel");
             Route::post("/login", "LoginController@actionIndex");
+        });
+        // 通用路由
+        static::registerRoute(function () {
+            // 退出登录
             Route::post("/logout", "LoginController@actionLogout");
+            // 刷新用户token
+            Route::get("/user/refresh-token", "UserController@actionRefreshToken");
+            // 清理缓存
+            Route::post("/system/clear-cache", "SystemController@actionClearCache");
+            // 用户信息
+            Route::get("/user/info", "UserController@actionInfo");
+            // 获取用户菜单权限
+            Route::get("/user/menus", "UserController@actionMenus");
         });
 
+        // 加载开启的权限模块
+        if (null === $modules) {
+            $modules = static::$_routeModules;
+        }
+        $loadModules = array_intersect(static::$_routeModules, $modules);
+        foreach ($loadModules as $m) {
+            $methodName = "init{$m}Routes";
+            if (is_callable([static::class, $methodName])) {
+                call_user_func([static::class, $methodName]);
+            }
+        }
+    }
+
+    /**
+     * 注册平台管理路由
+     */
+    protected static function initPlatformRoutes()
+    {
         static::registerRoute(function () {
-            Route::post("/system/clear-cache", "SystemController@actionClearCache");
-            Route::get("/user/info", "UserController@actionInfo");
-            Route::get("/user/refresh-token", "UserController@actionRefreshToken");
-            Route::get("/user/menus", "UserController@actionMenus");
-            RouteHelper::registerCURLRoute('TestController', 'test');
+            Route::get('platform/search-by-name', 'PlatformController@actionSearchByName');
+            Route::post('platform/change-enable', 'PlatformController@actionChangeEnable');
+            RouteHelper::registerCURLRoute('PlatformController', 'platform', [
+                RouteHelper::ROUTE_TYPE_DESTROY
+            ]);
         });
+    }
+
+    protected static function initAuthRoutes()
+    {
+//        var_dump(222);
     }
 
     /**

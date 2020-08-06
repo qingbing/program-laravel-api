@@ -7,7 +7,7 @@
 
 namespace Program\Controllers;
 
-use Helper\Response;
+use Helper\ResHelper;
 use Program\Components\Controller;
 
 /**
@@ -27,6 +27,6 @@ class SystemController extends Controller
      */
     public function actionClearCache()
     {
-        return Response::success();
+        return ResHelper::success();
     }
 }

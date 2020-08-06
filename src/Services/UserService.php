@@ -9,20 +9,17 @@ namespace Program\Services;
 
 
 use Helper\AppHelper;
-use Zf\Helper\Abstracts\Singleton;
-use Zf\Helper\Registry;
+use Program\Components\Service;
+use Program\Sim;
 
 /**
  * Class UserService
  * @package Program\Services
  */
-class UserService extends Singleton
+class UserService extends Service
 {
     const JWT_ISS = 'program';
     const JWT_AUD = 'program';
-
-    // 登记的KEY
-    const REGISTRY_KEY = 'program.user';
 
     /**
      * 获取一个新登录token
@@ -55,7 +52,7 @@ class UserService extends Singleton
      */
     public function info()
     {
-        return Registry::get(self::REGISTRY_KEY);
+        return Sim::user();
     }
 
     /**
@@ -65,7 +62,7 @@ class UserService extends Singleton
      */
     public function refreshToken()
     {
-        $user = Registry::get(self::REGISTRY_KEY);
+        $user = Sim::user();
         return $this->generateToken($user->uid);
     }
 

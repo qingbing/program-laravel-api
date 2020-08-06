@@ -7,7 +7,7 @@
 
 namespace Program\Controllers;
 
-use Helper\Response;
+use Helper\ResHelper;
 use Helper\ValidatorHelper;
 use Illuminate\Http\Request;
 use Program\Components\Controller;
@@ -38,7 +38,7 @@ class LoginController extends Controller
             ->addRule('password|密码', ['required', 'alpha_dash', 'between:6,30'])
             ->make($request->post());
         $res    = LoginService::getInstance()->index($params);
-        return Response::success($res, '登录成功');
+        return ResHelper::success($res, '登录成功');
     }
 
     /**
@@ -50,6 +50,6 @@ class LoginController extends Controller
     public function actionLogout()
     {
         $res = LoginService::getInstance()->logout();
-        return Response::success($res, '登录成功');
+        return ResHelper::success($res, '退出成功');
     }
 }

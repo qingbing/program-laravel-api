@@ -8,9 +8,10 @@
 namespace Program\Controllers;
 
 
-use Helper\Response;
+use Helper\ResHelper;
 use Program\Components\Controller;
 use Program\Services\UserService;
+use Program\Sim;
 
 class UserController extends Controller
 {
@@ -22,9 +23,9 @@ class UserController extends Controller
      */
     public function actionInfo()
     {
-        $userInfo = $this->user->toArray();
+        $userInfo = Sim::user()->toArray();
         unset($userInfo['password']);
-        return Response::success($userInfo);
+        return ResHelper::success($userInfo);
     }
 
     /**
@@ -36,7 +37,7 @@ class UserController extends Controller
     public function actionRefreshToken()
     {
         $res = UserService::getInstance()->refreshToken();
-        return Response::success($res);
+        return ResHelper::success($res);
     }
 
     /**
@@ -49,6 +50,6 @@ class UserController extends Controller
     public function actionMenus()
     {
         $res = UserService::getInstance()->menus();
-        return Response::success($res);
+        return ResHelper::success($res);
     }
 }

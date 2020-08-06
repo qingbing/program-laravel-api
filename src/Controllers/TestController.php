@@ -8,7 +8,6 @@
 namespace Program\Controllers;
 
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Program\Components\Controller;
 use Zf\Helper\Format;

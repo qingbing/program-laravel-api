@@ -8,8 +8,7 @@
 namespace Program\Components;
 
 use Program\Models\Dao\DaoUser;
-use Program\Services\UserService;
-use Zf\Helper\Registry;
+use Program\Sim;
 
 /**
  * program 模块控制器基类
@@ -17,13 +16,8 @@ use Zf\Helper\Registry;
  * Class Controller
  * @package Program\Components
  */
-class Controller extends \Helper\Components\Controller
+class Controller extends \Common\Components\Controller
 {
-    /**
-     * @var DaoUser
-     */
-    protected $user;
-
     /**
      * 在操作前执行
      *
@@ -32,7 +26,6 @@ class Controller extends \Helper\Components\Controller
      */
     protected function beforeAction(string $action = null)
     {
-        $this->user = Registry::get(UserService::REGISTRY_KEY);
         return true;
     }
 }
