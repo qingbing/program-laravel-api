@@ -9,6 +9,8 @@ namespace Program\Controllers;
 
 
 use Helper\ResHelper;
+use Helper\ValidatorHelper;
+use Illuminate\Http\Request;
 use Program\Components\Controller;
 use Program\Services\UserService;
 use Program\Sim;
@@ -38,6 +40,27 @@ class UserController extends Controller
     {
         $res = UserService::getInstance()->refreshToken();
         return ResHelper::success($res);
+    }
+
+    /**
+     * 保存用户头像
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @throws \Throwable
+     * @throws \Zf\Helper\Exceptions\Exception
+     */
+    public function actionSaveAvatar(Request $request)
+    {
+        // 参数检查
+        $params = ValidatorHelper::getInstance()
+            ->addRule('avatar|头像', ['required', 'string'])
+            ->make($request->post());
+        // 数据处理
+        $res = UserService::getInstance()->saveAvatar($params);
+        // 数据渲染
+        return ResHelper::success($res, '头像保存成功');
     }
 
     /**

@@ -7,6 +7,7 @@
 
 namespace Program\Controllers;
 
+use Helper\AppHelper;
 use Helper\ResHelper;
 use Helper\ValidatorHelper;
 use Illuminate\Http\Request;
@@ -33,7 +34,32 @@ class PublicController extends Controller
      */
     public function actionToken()
     {
-        return ResHelper::success(session()->token());
+        $token = session()->token();
+        return ResHelper::success($token);
+    }
+
+    /**
+     * GET
+     * 获取token
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @throws \Zf\Helper\Exceptions\Exception
+     */
+    public function actionQiniuToken(Request $request)
+    {
+        // 参数检查
+        $params = ValidatorHelper::getInstance()
+            ->addRule('key|文件名', ['string'])
+            ->make($request->query());
+        if (isset($params['key']) && !empty($params['key'])) {
+            $key = $params['key'];
+        } else {
+            $key = null;
+        }
+        $token = AppHelper::qiniu()->getUploadToken(null, $key);
+        return ResHelper::success($token);
     }
 
     /**

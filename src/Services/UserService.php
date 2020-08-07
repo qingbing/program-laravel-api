@@ -67,6 +67,33 @@ class UserService extends Service
     }
 
     /**
+     * 保存用户头像
+     *
+     * @param array $params
+     * @return mixed
+     * @throws \Throwable
+     */
+    public function saveAvatar(array $params)
+    {
+        $user          = Sim::user();
+        $this->logData = [
+            'before' => $user->avatar,
+            'save'   => $params['avatar'],
+        ];
+        $user->avatar  = $params['avatar'];
+        // 入库操作
+        return \DB::transaction(function () use ($user) {
+            $this->logMessage = '保存头像';
+            $this->logKeyword = $user->uid;
+            if ($user->save()) {
+                return $this->success(true);
+            } else {
+                return $this->throwBusinessException("数据库保存失败");
+            }
+        });
+    }
+
+    /**
      * 刷新用户的token
      *
      * @return array

@@ -56,6 +56,7 @@ class Assistant
             'namespace' => '\Program\Controllers',
         ], function () {
             Route::get("/token", "PublicController@actionToken");
+            Route::get("/qiniu-token", "PublicController@actionQiniuToken");
             Route::get("/label", "PublicController@actionLabel");
             Route::post("/login", "LoginController@actionIndex");
         });
@@ -65,6 +66,8 @@ class Assistant
             Route::post("/logout", "LoginController@actionLogout");
             // 刷新用户token
             Route::get("/user/refresh-token", "UserController@actionRefreshToken");
+            // 保存用户头像
+            Route::post("/user/save-avatar", "UserController@actionSaveAvatar");
             // 清理缓存
             Route::post("/system/clear-cache", "SystemController@actionClearCache");
             // 用户信息
